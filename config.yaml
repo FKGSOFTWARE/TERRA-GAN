@@ -1,0 +1,97 @@
+training:
+  loss_weights:
+    perceptual: 0.1
+    tv: 0.1
+    boundary: 0       # Boundary loss weight - disabled for ablaition and baseline
+    # boundary: 0.5       # Boundary loss weight
+  modes:
+    initial:
+      epochs: 100
+      batch_size: 32
+    human_guided:
+      epochs: 20
+      batch_size: 5
+      human_feedback_weight: 0.3
+      base_loss_weight: 0.7
+      learning_rate: 0.0001
+
+evaluation:
+  metrics:
+    iou_threshold: 0.5
+    precision_threshold: 0.7
+    recall_threshold: 0.7
+    boundary_size: 10    # Boundary size parameter for evaluation
+  sampling:
+    annotation_ratio: 0.01
+
+  checkpoint_dir: "mvp_gan/checkpoints"
+  checkpoint_file: "generator_epoch_49.pth"
+
+mask_processing:
+  roads:
+    canny_low: 150        # Higher threshold to reduce noise
+    canny_high: 300       # Higher threshold for strong edges only
+    hough_threshold: 100  # More votes needed to detect a line
+    hough_min_length: 100 # Longer minimum line length
+    hough_max_gap: 20     # Slightly larger gap allowed for continuity
+    line_thickness: 3     # Width of detected roads
+
+  buildings: # TODO - likely via model similar to SEGMENT ANYTHING
+
+  vegetation:
+    min_area: 5000        # Minimum area for vegetation patches
+    morph_kernel_size: 5  # Size of kernel for morphological operations
+
+  fields:
+    min_area: 10000       # Minimum area for field regions
+    morph_kernel_size: 5  # Size of kernel for morphological operations
+
+  visualization:
+    enabled: true
+    output_dir: "data/mask_visualization"
+
+portal:
+  base_url: "https://fkgsoftware.pythonanywhere.com"
+  api_key: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoidGVzdCJ9.py3rCvl3ki2BLG2vS-WUnTIRsxK_46oJ_BVtd7gElag"
+  # api_key: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYWRtaW4ifQ.UZ7vyzSnem3Qk3Bl5tYTrbSXCErOqQYTB2xTXbUnyo4"
+
+experiment_tracking:
+  enabled: true
+  tracking_uri: "file:./mlruns"  # Local filesystem by default
+  experiment_name: "dsm_inpainting"
+  tags:
+    project: "terrain_generation"
+    pipeline_version: "1.0"
+
+geographical_split:
+  enabled: true
+
+data:
+  raw_dir: "data/raw_data"
+  processed_dir: "data/processed_data"
+  output_dir: "data/output"
+  input_zip_folder: "data/raw_data/input_zip_folder"
+  extracted_dir: "data/raw_data/extracted"
+
+  gan_images_dir: "mvp_gan/data/train/images"
+  gan_masks_dir: "mvp_gan/data/train/masks"
+  human_annotations_dir: "data/human_annotations"
+  evaluation_results_dir: "data/evaluation_results"
+  models_dir: "data/output/models"
+  human_annotation_masks_dir: "human_annotation_masks"  # Directory name for human annotations within grid output
+
+  parent_structure:
+    processed:
+      - "metadata"
+      - "raw"
+      - "train/images"
+      - "train/masks"
+      - "test/images"
+      - "test/masks"
+      - "val/images"
+      - "val/masks"
+    output:
+      - "inpainted"
+      - "colored"
+      - "visualization"
+      - "masks"
