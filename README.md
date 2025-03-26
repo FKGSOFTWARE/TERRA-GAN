@@ -42,6 +42,8 @@ pip install -r requirements.txt
 
 ## Data Setup
 
+The data used for this project was sourced from [Ordinance Survey - Aerial Digimap](https://digimap.edina.ac.uk/). It is designed to use their data, where we download data through their portal. This is done by selecting download data > inputing the grid reference, e.g. "NJ05" > defining the data to download ("Aerial Imagery": "High Resolution 25cm", "Height and Terrain": "Digital Surface Model (2m)") > downloading and placing the zip folders in the input directory.
+
 1. Place raw data zip files in designated directories:
    - Training data: `./data/raw_data/experiment_training_input/`
    - Evaluation data: `./data/raw_data/experiment_human_eval_input/`
